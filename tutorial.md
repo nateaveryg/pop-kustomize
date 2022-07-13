@@ -105,7 +105,7 @@ cloudbuild.yaml</walkthrough-editor-open-file>  configuration file, which:
   * test cluster to staging clusters
   * staging cluster to product cluster, with approval gate
 
-
+extra stuff
 ## Tear down
 
 To remove the three running GKE clusters, run:
