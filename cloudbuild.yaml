@@ -1,6 +1,25 @@
 # Overview: build and create a release via Google Cloud Deploy for GKE
 # NOTE: currently requires SCM triggering due to dependency on the COMMIT_SHA variable
 steps:
+  # - id: Install python dependencies
+  #  name: python:3.9
+  #  entrypoint: /bin/bash
+  #  dir: package
+  #  args:
+  #    - -c
+  #    - |
+  #      pip install --upgrade pip setuptools twine wheel
+  #      pip install keyring
+  #      pip install keyrings.google-artifactregistry-auth
+  #      keyring —-list-backends
+  #      echo ####### pull required files for the app ########
+  #      pip install -r ../app/requirements.txt
+  # Install dependencies
+  #- id: Install python dependencies
+  #  name: python
+  #  entrypoint: pip
+  #  args: ['install', '-i', 'us-central1-docker.pkg.dev/$PROJECT_ID/python-local', '-r', 'requirements.txt', '--user']
+  #  dir: 'app' 
   # Build and tag using commit sha
   - id: build
     name: 'gcr.io/cloud-builders/docker'
@@ -29,21 +48,36 @@ steps:
       - "-xe"
       - "-c"
       - |
-        # Retrieve image SHAs
-        frontend_sha=$(gcloud artifacts docker images describe us-central1-docker.pkg.dev/$PROJECT_ID/pop-stats/pop-stats:${COMMIT_SHA} --format="value(image_summary.digest)")
-      
-        # Create Cloud Deploy release with new images
-        gcloud deploy releases create release-${SHORT_SHA} \
+        # Retrieve image SHA256 place into file
+        gcloud artifacts docker images describe \
+           'us-central1-docker.pkg.dev/$PROJECT_ID/pop-stats/pop-stats:${COMMIT_SHA}' \
+           --format 'value(image_summary.digest)' > digest        
+
+        gcloud deploy releases create release-$(date +'%Y%m%d%H%M%S') \
           --region us-central1 \
-          --delivery-pipeline=pop-stats-pipeline \
-          --annotations=commitId=${REVISION_ID}, gitlink=https://github.com/nateaveryg/pop-kustomize/commit/${COMMIT_SHA} \
-          --images=pop-stats=us-central1-docker.pkg.dev/$PROJECT_ID/pop-stats/pop-stats@$frontend_sha 
+          --delivery-pipeline=pop-stats-multitarget \
+          --annotations=commitId=${REVISION_ID},gitlink=https://github.com/nateaveryg/pop-kustomize/commit/${COMMIT_SHA} \
+          --images=pop-stats=us-central1-docker.pkg.dev/$PROJECT_ID/pop-stats/pop-stats:${COMMIT_SHA}@$(cat digest)
+        
+
+### Known Good Release ####        
+        # Create Cloud Deploy release with new images
+        #gcloud deploy releases create release-${SHORT_SHA} \
+        #  --region us-central1 \
+        #  --delivery-pipeline=pop-stats-pipeline \
+        #  --annotations=commitId=${REVISION_ID} \
+        #  --annotations gitlink=https://github.com/nateaveryg/pop-kustomize/commit/${COMMIT_SHA} \
+        #  --images=pop-stats=us-central1-docker.pkg.dev/$PROJECT_ID/pop-stats/pop-stats:${COMMIT_SHA}
+
+        # Will try fron-end_sha another time
+  #        --images=pop-stats=us-central1-docker.pkg.dev/$PROJECT_ID/pop-stats/pop-stats@$frontend_sha 
 
       
 images:
-- us-central1-docker.pkg.dev/$PROJECT_ID/pop-stats/pop-stats:${SHORT_SHA}
+- us-central1-docker.pkg.dev/$PROJECT_ID/pop-stats/pop-stats:${COMMIT_SHA}
 options:
   machineType: 'E2_HIGHCPU_8'
   requestedVerifyOption: VERIFIED
   sourceProvenanceHash: ["SHA256"]    
   substitution_option: 'ALLOW_LOOSE'
+tags: ['gartner-demo']  

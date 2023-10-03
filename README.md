@@ -17,6 +17,43 @@ The following tutorial walks you through all the setup needed to configure Googl
 
 If you don't want to run the tutorial in Cloud Shell, you can view the md file [here](https://github.com/vszal/pop-kustomize/blob/main/tutorial.md).
 
+Notes: 
+
+To view the security insight panel inside of Cloud Deploy, You might need to alter the permissions of the service account
+- Artifact Registry Reader
+- Container Analysis Occurrences Viewer
+- Service Usage Consumer
+
+## Cloud Build Features:
+- Cloud Repositories 2nd Gen
+- Security Insights Panel
+- SLSA build provenance
+
+## Artifact Registry
+- Docker Registry
+- local python repo
+- remote python repo
+- virtual python repo
+
+## Artifact Analysis
+- Scan on push
+- OS level vuln scans
+- python package vuln scans
+
+## Cloud Deploy Features:
+
+- Approvals
+- Canary
+- Verification
+- Pre-deployment Hook
+- Multiple Stages
+- Promotions between stages
+- Security Insights panel
+- Multi-target deployment for prod
+
+![Deployment Targets](https://github.com/nateaveryg/pop-kustomize/blob/main/images/Cloud_Deploy_single-and-multi-cluster.png)
+
+
 ## About the Sample app - Population stats
 
 Simple web app that pulls population data based on U.S. address queries. Note, other countries are currently not supported.
@@ -25,4 +62,4 @@ Population data gathered from the U.S. Census Bureau [Population Estimate API](h
 
 Feedback and contributions welcomed!
 
-editied - test of binauthz alert policy 1
+demo 2

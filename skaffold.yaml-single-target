@@ -1,8 +1,5 @@
-apiVersion: skaffold/v4beta5
+apiVersion: skaffold/v3alpha1
 kind: Config
-
-
-
 metadata:
   name: pop-stats
 build:
@@ -28,25 +25,12 @@ profiles:
     manifests:
       kustomize:
         paths: 
-          - k8s/overlays/test 
+          - k8s/overlays/test          
   - name: staging
-
-    # Calling pre-deploy hook that calls terraform
-    customActions:
-    - name: predeploy-action
-      containers:
-      - name: tf-plan
-        image: hashicorp/terraform:1.0.0
-        command: ["/bin/sh"]
-        args: ["-c", '../terraform-ex/tfplan-ex.bat' ]
-      executionMode:
-         kubernetesCluster: {}
-
     manifests:
       kustomize:
         paths: 
           - k8s/overlays/staging
-     
     verify:
     #Call Healthcheck on Staging Target URL       
     - name: staging-healthcheck
