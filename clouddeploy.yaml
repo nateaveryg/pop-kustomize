@@ -6,26 +6,22 @@ metadata:
   name: pop-stats-multitarget
 description: pop-stats application delivery pipeline with canary
 serialPipeline:
-  stages:
-  - targetId: test
-
-  - targetId: staging
-    profiles: [staging]
-    strategy:
-      canary:
-        runtimeConfig:
-          kubernetes:
-            serviceNetworking:
-              service: "pop-stats"
-              deployment: "pop-stats"
-              disablePodOverprovisioning: false
-        canaryDeployment:
-          percentages: [0]
-          verify: true  
-          predeploy:
-            actions: ["predeploy-action"]     
-  - targetId: prod
-    profiles: [prod]
+   stages:
+   - targetId: test
+   - targetId: staging
+     profiles: [staging]
+     strategy:
+       canary:
+         runtimeConfig:
+           kubernetes:
+             serviceNetworking:
+                service: "pop-stats"
+                deployment: "pop-stats"
+         canaryDeployment:
+           percentages: [0]
+           verify: true     
+   - targetId: prod
+     profiles: [prod]
 ---
 
 apiVersion: deploy.cloud.google.com/v1
