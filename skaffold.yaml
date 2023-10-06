@@ -1,4 +1,5 @@
-apiVersion: skaffold/v4beta5
+#apiVersion: skaffold/v4beta5
+apiVersion: skaffold/v3alpha1 
 kind: Config
 
 metadata:
