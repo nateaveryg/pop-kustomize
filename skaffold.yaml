@@ -1,8 +1,6 @@
 apiVersion: skaffold/v4beta5
 kind: Config
 
-
-
 metadata:
   name: pop-stats
 build:
